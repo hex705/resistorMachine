@@ -20,7 +20,9 @@ For use with the Adafruit Motor Shield v2
 // to motor port #2 (M3 and M4)
 Adafruit_StepperMotor *myMotor = AFMS.getStepper(200, 1);
 
-int stepsForTenResistors = 150;
+int HOWMANY = 4;
+int stepsForTenResistors = 150; // was 150 before 2024
+int stepsForFourResistors = 40;
 int microBackwardPin = 4;
 int advancePin = 6;
 int microForwardPin = 7;
@@ -34,7 +36,7 @@ void setup() {
   AFMS.begin();  // create with the default frequency 1.6KHz
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
   
-  myMotor->setSpeed(100);  // 10 rpm  
+  myMotor->setSpeed(85);  // 10 rpm  
 
    pinMode(advancePin, INPUT);
    pinMode(microForwardPin, INPUT);
@@ -71,6 +73,7 @@ void loop() {
       
       case 1:
         advance();
+        forwardMicro(10); // was 2
       break;
       default:
        STATE = 0;
@@ -82,7 +85,14 @@ void loop() {
 
 void advance(){
     Serial.println("--> advance");
+     myMotor->setSpeed(50); 
+      myMotor->step(25, BACKWARD, SINGLE); 
+      myMotor->setSpeed(65); 
+      if ( HOWMANY == 4) {
+myMotor->step(stepsForFourResistors, BACKWARD, SINGLE); 
+      } else {
     myMotor->step(stepsForTenResistors, BACKWARD, SINGLE); 
+      }
   
 }
 
